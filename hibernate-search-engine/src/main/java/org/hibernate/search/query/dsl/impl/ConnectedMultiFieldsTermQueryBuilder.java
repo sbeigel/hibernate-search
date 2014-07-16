@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.Query;
@@ -61,6 +62,7 @@ public class ConnectedMultiFieldsTermQueryBuilder implements TermTermination {
 	private final TermQueryContext termContext;
 	private final List<FieldContext> fieldContexts;
 	private final QueryBuildingContext queryContext;
+    private Occur defaultOperator = Occur.SHOULD;
 
 	public ConnectedMultiFieldsTermQueryBuilder(TermQueryContext termContext,
 												Object value,
@@ -88,6 +90,11 @@ public class ConnectedMultiFieldsTermQueryBuilder implements TermTermination {
 			return queryCustomizer.setWrappedQuery( aggregatedFieldsQuery ).createQuery();
 		}
 	}
+
+    public TermTermination defaultOperator(Occur defaultOperator) {
+        this.defaultOperator = defaultOperator;
+        return this;
+    }
 
 	private Query createQuery(FieldContext fieldContext, ConversionContext conversionContext) {
 		final Query perFieldQuery;
@@ -117,7 +124,7 @@ public class ConnectedMultiFieldsTermQueryBuilder implements TermTermination {
 				BooleanQuery booleanQuery = new BooleanQuery();
 				for ( String localTerm : terms ) {
 					Query termQuery = createTermQuery( fieldContext, localTerm );
-					booleanQuery.add( termQuery, BooleanClause.Occur.SHOULD );
+					booleanQuery.add( termQuery, defaultOperator );
 				}
 				perFieldQuery = booleanQuery;
 			}

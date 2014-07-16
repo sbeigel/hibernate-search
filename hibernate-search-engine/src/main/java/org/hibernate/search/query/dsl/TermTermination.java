@@ -24,8 +24,16 @@
 
 package org.hibernate.search.query.dsl;
 
+import org.apache.lucene.search.BooleanClause.Occur;
+
 /**
 * @author Emmanuel Bernard
 */
 public interface TermTermination extends Termination<TermTermination> {
+
+    /**
+     * join operator for terms tokens (default is SHOULD, logical OR)
+     */
+    TermTermination defaultOperator(Occur operator);
+
 }
