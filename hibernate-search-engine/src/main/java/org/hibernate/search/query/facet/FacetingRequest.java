@@ -54,6 +54,8 @@ public interface FacetingRequest {
 	 * @return {@code true} if facets with a count of 0 should be included in the returned facet list
 	 */
 	public boolean hasZeroCountsIncluded();
+
+    public boolean shouldUseConjunction();
 }
 
 

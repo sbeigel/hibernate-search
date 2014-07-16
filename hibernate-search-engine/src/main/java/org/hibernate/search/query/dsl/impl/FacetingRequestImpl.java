@@ -54,7 +54,13 @@ public abstract class FacetingRequestImpl implements FacetingRequest {
 	 */
 	private boolean includeZeroCounts = true;
 
-	/**
+    /**
+     * Whether the group of facets will be combined with a conjunction (default is false,
+     * the facets are combined with a disjunction (logical OR)
+     */
+    private boolean useConjunction = false;
+
+    /**
 	 * The maximum number of {@link org.hibernate.search.query.facet.Facet}s to return for this request. A negative value means that all
 	 * facets will be included
 	 */
@@ -107,7 +113,13 @@ public abstract class FacetingRequestImpl implements FacetingRequest {
 		this.includeZeroCounts = includeZeroCounts;
 	}
 
-	@Override
+    public boolean shouldUseConjunction() { return useConjunction; }
+
+    public void setUseConjunction(boolean useConjunction) {
+        this.useConjunction = useConjunction;
+    }
+
+    @Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append( "FacetingRequest" );

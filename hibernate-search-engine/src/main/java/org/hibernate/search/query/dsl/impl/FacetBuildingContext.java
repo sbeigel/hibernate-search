@@ -24,6 +24,8 @@
 
 package org.hibernate.search.query.dsl.impl;
 
+import static org.hibernate.search.util.impl.CollectionHelper.newArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -33,8 +35,6 @@ import org.hibernate.search.engine.spi.EntityIndexBinder;
 import org.hibernate.search.engine.spi.SearchFactoryImplementor;
 import org.hibernate.search.query.facet.FacetSortOrder;
 import org.hibernate.search.query.facet.FacetingRequest;
-
-import static org.hibernate.search.util.impl.CollectionHelper.newArrayList;
 
 /**
  * @author Hardy Ferentschik
@@ -61,6 +61,7 @@ class FacetBuildingContext<T> {
 	private String fieldName;
 	private FacetSortOrder sort = FacetSortOrder.COUNT_DESC;
 	private boolean includeZeroCount = true;
+    private boolean useConjunction = false;
 	private boolean isRangeQuery = false;
 	private List<FacetRange<T>> rangeList = newArrayList();
 	private T rangeStart;
@@ -91,6 +92,10 @@ class FacetBuildingContext<T> {
 	void setIncludeZeroCount(boolean includeZeroCount) {
 		this.includeZeroCount = includeZeroCount;
 	}
+
+    void setUseConjunction(boolean useConjunction) {
+        this.useConjunction = useConjunction;
+    }
 
 	public void setRangeQuery(boolean rangeQuery) {
 		isRangeQuery = rangeQuery;
@@ -167,6 +172,7 @@ class FacetBuildingContext<T> {
 		}
 		request.setSort( sort );
 		request.setIncludeZeroCounts( includeZeroCount );
+        request.setUseConjunction( useConjunction );
 		request.setMaxNumberOfFacets( maxFacetCount );
 		return request;
 	}

@@ -23,6 +23,9 @@
  */
 package org.hibernate.search.query.engine.impl;
 
+import static org.hibernate.search.util.impl.CollectionHelper.newArrayList;
+import static org.hibernate.search.util.impl.CollectionHelper.newHashMap;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,16 +36,12 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
-
 import org.hibernate.search.query.dsl.impl.FacetingRequestImpl;
 import org.hibernate.search.query.engine.spi.DocumentExtractor;
 import org.hibernate.search.query.engine.spi.FacetManager;
 import org.hibernate.search.query.facet.Facet;
 import org.hibernate.search.query.facet.FacetSelection;
 import org.hibernate.search.query.facet.FacetingRequest;
-
-import static org.hibernate.search.util.impl.CollectionHelper.newArrayList;
-import static org.hibernate.search.util.impl.CollectionHelper.newHashMap;
 
 /**
  * Default implementation of the {@link org.hibernate.search.query.engine.spi.FacetManager} implementation.
@@ -167,7 +166,8 @@ public class FacetManagerImpl implements FacetManager {
 	private Query createSelectionGroupQuery(FacetSelectionImpl selection) {
 		BooleanQuery orQuery = new BooleanQuery();
 		for ( Facet facet : selection.getFacetList() ) {
-			orQuery.add( facet.getFacetQuery(), BooleanClause.Occur.SHOULD );
+            FacetingRequest fr = facetRequests.get(facet.getFacetingName());
+			orQuery.add( facet.getFacetQuery(), fr.shouldUseConjunction() ? BooleanClause.Occur.MUST : BooleanClause.Occur.SHOULD);
 		}
 		return orQuery;
 	}

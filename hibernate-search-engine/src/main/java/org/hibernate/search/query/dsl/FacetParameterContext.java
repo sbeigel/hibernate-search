@@ -44,7 +44,14 @@ public interface FacetParameterContext extends FacetTermination {
 	 */
 	FacetParameterContext includeZeroCounts(boolean zeroCounts);
 
-	/**
+    /**
+     * @param conjunction Determines whether values with will be combined in a conjunction (logical AND)
+     *
+     * @return a {@code FacetParameterContext} to continue building the facet request
+     */
+    FacetParameterContext useConjunction(boolean conjunction);
+
+    /**
 	 * Limits the maximum numbers of facets to the specified number.
 	 *
 	 * @param maxFacetCount the maximum number of facets to include in the response. A negative value means that
